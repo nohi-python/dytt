@@ -1,0 +1,29 @@
+/*
+ * custom css
+ */
+a:hover, a:active {
+    text-decoration: none;
+}
+
+#vm {
+    display: none;
+}
+
+#loading {
+    margin-bottom: 15px;
+}
+
+#error {
+    display: none;
+    margin-bottom: 15px;
+}
+
+.textover {
+    width: 100px;
+    height: 20px;
+    display: inline-block;
+    text-overflow: unset;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;;
+}
