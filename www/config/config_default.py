@@ -9,6 +9,7 @@ configs = {
         'password': 'dbpass',
         'database': 'dytt'
     },
+    'folder_path': '/home/www/web/dytt/file',
     'session': {
         'secret': 'AwEsOmE'
     }

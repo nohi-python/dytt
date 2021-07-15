@@ -7,7 +7,7 @@ import re
 import traceback
 
 from common.ippool.proxypool import IPProxyPool
-
+from common.config.config import configs
 import os
 import time
 
@@ -300,7 +300,7 @@ class BeautifulPicture():
         self.web_url = 'https://www.dy2018.com'  # 地址网站
         self.web_url_first = 'https://www.dy2018.com/html/gndy/dyzz/index.html'  # 要访问的网页地址
         self.web_url_page = 'https://www.dy2018.com/html/gndy/dyzz/index_%s.html'  # 要访问的网页地址
-        self.folder_path = '/Users/nohi/tmp/python/dytt'  # 设置图片要存放的文件目录
+        self.folder_path =  configs.folder_path  # 设置图片要存放的文件目录
         self.ippool = IPProxyPool()
         # self.ippool = IPProxyPool_XXY()
 
