@@ -86,7 +86,7 @@ async def api_movies(*, page='1'):
     p = Page(num, page_index)
     if num == 0:
         return dict(page=p, blogs=())
-    movies = await DyttMovie.findAll(orderBy='updated_at desc', limit=(p.offset, p.limit))
+    movies = await DyttMovie.findAll(orderBy='id desc', limit=(p.offset, p.limit))
     return dict(page=p, movies=movies)
 
 
@@ -105,7 +105,7 @@ async def api_refresh_movie(request, *, page='1'):
     p = Page(num, page_index)
     if num == 0:
         return dict(page=p, blogs=())
-    movies = await DyttMovie.findAll(orderBy='updated_at desc', limit=(p.offset, p.limit))
+    movies = await DyttMovie.findAll(orderBy='id desc', limit=(p.offset, p.limit))
     return dict(page=p, movies=movies)
 
 

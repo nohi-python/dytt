@@ -78,9 +78,11 @@ def deploy():
         # sudo('chown www-data:www-data www')
         # sudo('chown -R www-data:www-data %s' % newdir)
     with settings(warn_only=True):
-        sudo('supervisorctl stop dytt')
-        sudo('supervisorctl start dytt')
-        sudo('/usr/sbin/nginx reload')
+        run('supervisorctl stop dytt')
+        run('supervisorctl start dytt')
+        # sudo('supervisorctl stop dytt')
+        # sudo('supervisorctl start dytt')
+        # sudo('/usr/sbin/nginx reload')
 
 
 RE_FILES = re.compile('\r?\n')
