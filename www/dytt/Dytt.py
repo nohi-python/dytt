@@ -406,7 +406,7 @@ class BeautifulPicture():
                 if dytt_movie is not None:
                     _print('id[%s],url[%s],name[%s]数据库中已经存在，路过' % (id_str, uri_str, title_str))
                     continue
-
+                _print('id[%s],url[%s],name[%s]数据库中已经不存在，继续解析。。。。。' % (id_str, uri_str, title_str))
                 time.sleep(ts)
                 movie = self.get_movie(movie)
                 movies.append(movie)
