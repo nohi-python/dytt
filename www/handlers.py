@@ -95,11 +95,13 @@ async def api_movies(*, page='1'):
 async def api_refresh_movie(request, *, page='1'):
     logging.debug('api_refresh_movie')
     beauty = BeautifulPicture()  # 创建一个类的实例
-    movies = beauty.get_page()  #
+    movies = await beauty.get_page()  #
 
+    logging.debug("=====saveMovies:" + str(len(movies)))
     # 保存
     await saveMovies(movies)
 
+    logging.debug("=====get_page_index:" + str(len(movies)))
     page_index = get_page_index(page)
     num = await DyttMovie.findNumber('count(id)')
     p = Page(num, page_index)
@@ -109,21 +111,29 @@ async def api_refresh_movie(request, *, page='1'):
     return dict(page=p, movies=movies)
 
 
-# 保存电影
+# 保存电影列表
 async def saveMovies(movies):
     for movie in movies:
-        id = movie.id_str
-        dytt_movie = await DyttMovie.find(id)
-        if dytt_movie is not None:
-            logging.debug('电影[%s][%s]已经存在' % (id, movie.pianmin))
-            copyMovie(movie, dytt_movie)
-            await dytt_movie.update()
+        try:
+            saveMovie(movie)
+        except Exception as e:
+            logging.exception(e)
             continue
-        # 转换为
-        dytt_movie = DyttMovie()
+
+
+# 保存电影
+async def saveMovie(movie):
+    id = movie.id_str
+    dytt_movie = await DyttMovie.find(id)
+    if dytt_movie is not None:
+        logging.debug('电影[%s][%s]已经存在' % (id, movie.pianmin))
         copyMovie(movie, dytt_movie)
-        logging.debug('========dytt_movie:' + json.dumps(dytt_movie, ensure_ascii=False))
-        await dytt_movie.save()
+        await dytt_movie.update()
+    # 转换为
+    dytt_movie = DyttMovie()
+    copyMovie(movie, dytt_movie)
+    logging.debug('========dytt_movie:' + json.dumps(dytt_movie, ensure_ascii=False))
+    await dytt_movie.save()
 
 
 def copyMovie(movie: Movie, dytt_movie: DyttMovie):

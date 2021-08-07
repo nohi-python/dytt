@@ -6,6 +6,7 @@ import random
 import re
 import traceback
 
+from model.models import DyttMovie
 from common.ippool.proxypool import IPProxyPool
 from common.config.config import configs
 import os
@@ -352,7 +353,7 @@ class BeautifulPicture():
         _print(file_name, '文件保存成功！')
         f.close()
 
-    def get_page(self, pageIndex=1):
+    async def get_page(self, pageIndex=1):
         logging.debug('开始请求第%s页', pageIndex)
         url = self.web_url_first
         if pageIndex > 1:
@@ -400,10 +401,18 @@ class BeautifulPicture():
             movie.title_str = title_str
             ts = random.randint(5, 10)
             _print('sleep %ss' % ts)
-            time.sleep(ts)
-            movie = self.get_movie(movie)
-            movies.append(movie)
+            try:
+                dytt_movie = await DyttMovie.find(id_str)
+                if dytt_movie is not None:
+                    _print('id[%s],url[%s],name[%s]数据库中已经存在，路过' % (id_str, uri_str, title_str))
+                    continue
 
+                time.sleep(ts)
+                movie = self.get_movie(movie)
+                movies.append(movie)
+            except Exception as e:
+                logging.exception(e)
+                continue
         logging.debug('返回电影记录数:%s' % len(movies))
         return movies
 
