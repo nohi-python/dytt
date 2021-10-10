@@ -65,4 +65,21 @@ except ImportError:
     traceback.print_exc()
     pass
 
+try:
+    logging.info('参数个数为[%s]个参数。' % len(sys.argv))
+    logging.info('参数列表:%s' % str(sys.argv))
+    conf_file = ''
+    if len(sys.argv) > 2:
+        conf_file = sys.argv[1]
+        logging.info('配置文件:%s' % conf_file)
+        if conf_file == 'dev' :
+            from config import config_dev
+            configs = merge(configs, config_dev.configs)
+        logging.info(configs)
+    else:
+        logging.info('没有指定配置文集的')
+except ImportError:
+    logging.error('加载配置文件[%s]异常' % conf_file)
+    pass
+
 configs = toDict(configs)

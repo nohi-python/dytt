@@ -9,6 +9,7 @@ import traceback
 from model.models import DyttMovie
 from common.ippool.proxypool import IPProxyPool
 from common.config.config import configs
+from common.exception.exception import ServiceException
 import os
 import time
 
@@ -329,7 +330,7 @@ class BeautifulPicture():
         print(headers)
         # proxies = self.ippool.get_proxies()
         # r = requests.get(url, proxies=proxies, headers=headers, verify=False)  # 像目标url地址发送get请求，返回一个response对象
-        r = requests.get(url, headers=headers, verify=False)  # 像目标url地址发送get请求，返回一个response对象
+        r = requests.get(url, headers=headers, verify=False, timeout=(10, 30))  # 像目标url地址发送get请求，返回一个response对象
         return r
 
     def mkdir(self, path):  ##这个函数创建文件夹
@@ -353,14 +354,20 @@ class BeautifulPicture():
         _print(file_name, '文件保存成功！')
         f.close()
 
+    # 请求电影天堂页面
     async def get_page(self, pageIndex=1):
         logging.debug('开始请求第%s页', pageIndex)
         url = self.web_url_first
         if pageIndex > 1:
             url = self.web_url_page % pageIndex
         logging.debug('第%s页url[%s]', pageIndex, url)
+        try:
+            r = self.request(url)
+        except Exception as r:
+            traceback.print_exc()
+            print('  未知错误 %s' % (r))
+            raise ServiceException("ServiceException", "获取电影列表异常")
 
-        r = self.request(url)
         content = r.content.decode('gbk')
         # 模拟
         # file_name = '/Users/nohi/Downloads/first.html'
@@ -394,7 +401,7 @@ class BeautifulPicture():
             title_str = re.findall(p1, title_str)[0]
             uri_str = self.web_url + uri_str
             i += 1
-            _print('id[%s],url[%s],name[%s]' % (id_str, uri_str, title_str))
+            _print('============ %s/%s id[%s],url[%s],name[%s]' % (i, len(all_a), id_str, uri_str, title_str))
             movie = Movie()
             movie.id_str = id_str
             movie.uri_str = uri_str

@@ -9,6 +9,7 @@ import time
 __author__ = 'NOHI'
 
 from common.config.config import configs
+from common.exception.exception import ServiceException
 from common.web.apis import Page
 from common.web.coroweb import get, post
 from model.models import DyttMovie
@@ -95,7 +96,11 @@ async def api_movies(*, page='1'):
 async def api_refresh_movie(request, *, page='1'):
     logging.debug('api_refresh_movie')
     beauty = BeautifulPicture()  # 创建一个类的实例
-    movies = await beauty.get_page()  #
+    try:
+        movies = await beauty.get_page()  #
+    except ServiceException as r:
+        print('  未知错误 %s' % (r))
+
 
     logging.debug("=====saveMovies:" + str(len(movies)))
     # 保存
@@ -115,7 +120,7 @@ async def api_refresh_movie(request, *, page='1'):
 async def saveMovies(movies):
     for movie in movies:
         try:
-            saveMovie(movie)
+            await saveMovie(movie)
         except Exception as e:
             logging.exception(e)
             continue
