@@ -104,7 +104,8 @@ async def api_refresh_movie(request, *, page='1'):
 
     logging.debug("=====saveMovies:" + str(len(movies)))
     # 保存
-    await saveMovies(movies)
+    # 保存改为解析完成后
+    # await saveMovies(movies)
 
     logging.debug("=====get_page_index:" + str(len(movies)))
     page_index = get_page_index(page)
@@ -116,53 +117,28 @@ async def api_refresh_movie(request, *, page='1'):
     return dict(page=p, movies=movies)
 
 
-# 保存电影列表
-async def saveMovies(movies):
-    for movie in movies:
-        try:
-            await saveMovie(movie)
-        except Exception as e:
-            logging.exception(e)
-            continue
+# # 保存电影列表
+# async def saveMovies(movies):
+#     for movie in movies:
+#         try:
+#             await saveMovie(movie)
+#         except Exception as e:
+#             logging.exception(e)
+#             continue
+#
+#
+# # 保存电影
+# async def saveMovie(movie):
+#     id = movie.id_str
+#     dytt_movie = await DyttMovie.find(id)
+#     if dytt_movie is not None:
+#         logging.debug('电影[%s][%s]已经存在' % (id, movie.pianmin))
+#         copyMovie(movie, dytt_movie)
+#         await dytt_movie.update()
+#     # 转换为
+#     dytt_movie = DyttMovie()
+#     copyMovie(movie, dytt_movie)
+#     logging.debug('========dytt_movie:' + json.dumps(dytt_movie, ensure_ascii=False))
+#     await dytt_movie.save()
 
 
-# 保存电影
-async def saveMovie(movie):
-    id = movie.id_str
-    dytt_movie = await DyttMovie.find(id)
-    if dytt_movie is not None:
-        logging.debug('电影[%s][%s]已经存在' % (id, movie.pianmin))
-        copyMovie(movie, dytt_movie)
-        await dytt_movie.update()
-    # 转换为
-    dytt_movie = DyttMovie()
-    copyMovie(movie, dytt_movie)
-    logging.debug('========dytt_movie:' + json.dumps(dytt_movie, ensure_ascii=False))
-    await dytt_movie.save()
-
-
-def copyMovie(movie: Movie, dytt_movie: DyttMovie):
-    # dytt_movie_dict = dytt_movie.__dict__
-    # for key, value in movie.__dict__.items():
-    #     if hasattr(dytt_movie, '_' + key):
-    #         dytt_movie[key] = value
-    dytt_movie.id = movie.getParameters('id_str')
-    dytt_movie.name = movie.getParameters('title_str')
-    dytt_movie.name_src = movie.getParameters('title_str')
-    dytt_movie.zhuyan = movie.getParameters('zhuyan')
-    dytt_movie.jianjie = movie.getParameters('jianjie')
-    dytt_movie.yuyan = movie.getParameters('yuyan')
-    dytt_movie.zimu = movie.getParameters('zimu')
-    dytt_movie.chandi = movie.getParameters('chandi')
-    dytt_movie.leibie = movie.getParameters('leibie')
-    dytt_movie.doubanpinfen = movie.getParameters('doubanpinfen')
-    dytt_movie.imdbpinfen = movie.getParameters('imdbpinfen')
-    dytt_movie.wenjiangeshi = movie.getParameters('wenjiangeshi')
-    dytt_movie.shangyinriqi = movie.getParameters('shangyinriqi')
-    dytt_movie.wenjiandaxiao = movie.getParameters('wenjiandaxiao')
-    dytt_movie.pianchang = movie.getParameters('pianchang')
-    dytt_movie.daoyan = movie.getParameters('daoyan')
-    dytt_movie.huojian = movie.getParameters('huojiang')
-    dytt_movie.uri = movie.getParameters('uri_str')
-    dytt_movie.story_date = movie.getParameters('niandai')
-    dytt_movie.shipinchicun = movie.getParameters('_shipinchicun')

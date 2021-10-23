@@ -257,6 +257,32 @@ def _print(msg, *args):
     else:
         logging.debug('%s %s' % (msg, args))
 
+def copyMovie(movie: Movie, dytt_movie: DyttMovie):
+    # dytt_movie_dict = dytt_movie.__dict__
+    # for key, value in movie.__dict__.items():
+    #     if hasattr(dytt_movie, '_' + key):
+    #         dytt_movie[key] = value
+    dytt_movie.id = movie.getParameters('id_str')
+    dytt_movie.name = movie.getParameters('title_str')
+    dytt_movie.name_src = movie.getParameters('title_str')
+    dytt_movie.zhuyan = movie.getParameters('zhuyan')
+    dytt_movie.jianjie = movie.getParameters('jianjie')
+    dytt_movie.yuyan = movie.getParameters('yuyan')
+    dytt_movie.zimu = movie.getParameters('zimu')
+    dytt_movie.chandi = movie.getParameters('chandi')
+    dytt_movie.leibie = movie.getParameters('leibie')
+    dytt_movie.doubanpinfen = movie.getParameters('doubanpinfen')
+    dytt_movie.imdbpinfen = movie.getParameters('imdbpinfen')
+    dytt_movie.wenjiangeshi = movie.getParameters('wenjiangeshi')
+    dytt_movie.shangyinriqi = movie.getParameters('shangyinriqi')
+    dytt_movie.wenjiandaxiao = movie.getParameters('wenjiandaxiao')
+    dytt_movie.pianchang = movie.getParameters('pianchang')
+    dytt_movie.daoyan = movie.getParameters('daoyan')
+    dytt_movie.huojian = movie.getParameters('huojiang')
+    dytt_movie.uri = movie.getParameters('uri_str')
+    dytt_movie.story_date = movie.getParameters('niandai')
+    dytt_movie.shipinchicun = movie.getParameters('_shipinchicun')
+
 
 class BeautifulPicture():
     def __init__(self):  # 类的初始化操作
@@ -414,14 +440,31 @@ class BeautifulPicture():
                     _print('id[%s],url[%s],name[%s]数据库中已经存在，路过' % (id_str, uri_str, title_str))
                     continue
                 _print('id[%s],url[%s],name[%s]数据库中不存在，继续解析。。。。。' % (id_str, uri_str, title_str))
-                time.sleep(ts)
+
                 movie = self.get_movie(movie)
                 movies.append(movie)
+                # 保存数据库
+                await self.saveMovie(movie)
+                _print('id[%s],url[%s],name[%s]保存完成' % (id_str, uri_str, title_str))
+                time.sleep(ts)
             except Exception as e:
                 logging.exception(e)
                 continue
         logging.debug('返回电影记录数:%s' % len(movies))
         return movies
+
+    async def saveMovie(self, movie):
+        id = movie.id_str
+        dytt_movie = await DyttMovie.find(id)
+        if dytt_movie is not None:
+            logging.debug('电影[%s][%s]已经存在' % (id, movie.pianmin))
+            copyMovie(movie, dytt_movie)
+            await dytt_movie.update()
+        # 转换为
+        dytt_movie = DyttMovie()
+        copyMovie(movie, dytt_movie)
+        logging.debug('========dytt_movie:' + json.dumps(dytt_movie, ensure_ascii=False))
+        await dytt_movie.save()
 
     def get_movie(self, movie):
         _print('获取电影[%s][%s]' % (movie.title_str, movie.uri_str))
