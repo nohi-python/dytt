@@ -394,7 +394,12 @@ class BeautifulPicture():
             print('  未知错误 %s' % (r))
             raise ServiceException("ServiceException", "获取电影列表异常")
 
-        content = r.content.decode('gbk')
+        # content = r.content.decode('gbk')
+        if r.encoding == 'utf-8':
+            content = r.content.decode('utf-8')
+        else:
+            content = r.content.decode('gbk')
+
         # 模拟
         # file_name = '/Users/nohi/Downloads/first.html'
         # content = ''
@@ -404,7 +409,7 @@ class BeautifulPicture():
         # finally:
         #     if f:
         #         f.close()
-        logging.debug(content)
+        _print("content", content)
         logging.debug("解析文件内容 start")
         all_a = BeautifulSoup(content, 'lxml').find_all('a', class_='ulink')  # 获取网页中的class为cV68d的所有a标签
         if not all_a or len(all_a) == 0:
