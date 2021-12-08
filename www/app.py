@@ -157,7 +157,7 @@ async def init(loop):
 
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, 'localhost', configs.port)
+    site = web.TCPSite(runner, '0.0.0.0', configs.port)
     logging.info('server started at http://127.0.0.1:' + str(configs.port) + '...')
     await site.start()
 
