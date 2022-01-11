@@ -101,6 +101,7 @@ async def response_factory(app, handler):
             return resp
         if isinstance(r, dict):
             template = r.get('__template__')
+            r['__basePath__'] = configs.basePath
             if template is None:
                 resp = web.Response(
                     body=json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8'))
@@ -158,7 +159,7 @@ async def init(loop):
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', configs.port)
-    logging.info('server started at http://127.0.0.1:' + str(configs.port) + '...')
+    logging.info('server started at http://127.0.0.1:' + str(configs.port) + configs.basePath + '...')
     await site.start()
 
 

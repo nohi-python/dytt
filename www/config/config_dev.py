@@ -2,7 +2,7 @@
 
 configs = {
     'db': {
-        'host': '139.224.41.4',
+        'host': '10.0.0.210',
         'port': 3306,
         'user': 'root',
         'password': 'nohi1234',

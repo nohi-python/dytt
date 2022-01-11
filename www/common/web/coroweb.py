@@ -8,7 +8,7 @@ from urllib import parse
 from aiohttp import web
 sys.path.append("../..")
 from common.web.apis import APIError
-
+from common.config.config import configs
 
 def get(path):
     """
@@ -159,7 +159,7 @@ def add_static(app, path):
     # path 从app.py传入
     # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
     logging.info('to add static %s => %s' % ('/static/', path))
-    app.router.add_static('/static/', path)
+    app.router.add_static(configs.basePath + '/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
 
 
@@ -170,6 +170,7 @@ def add_route(app, fn):
         raise ValueError('@get or @post not defined in %s.' % str(fn))
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
+    path = configs.basePath + path
     logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 

@@ -32,3 +32,4 @@
 ## 自动发布
 * fab build
 * fab deploy
+* fab -f gen10 build/deploy

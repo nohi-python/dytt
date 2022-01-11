@@ -5,6 +5,9 @@
 {% block beforehead %}
 
 <script>
+  __basePath = '{{ __basePath__ }}'
+  console.info('index.html __basePath:' + __basePath)
+
     function initVM(data) {
         var vm = new Vue({
             el: '#vm',
@@ -16,7 +19,7 @@
                 refresh_movies: function () {
                     console.info('===refresh_movies===')
                     if (confirm('确认更新电影？')) {
-                        postJSON('/api/movie/refresh', function (err, r) {
+                        postJSON(__basePath + '/api/movie/refresh', function (err, r) {
                             if (err) {
                                 return alert(err.message || err.error || err);
                             }
@@ -30,7 +33,7 @@
     }
 
     $(function () {
-        getJSON('/api/movies', {
+        getJSON(__basePath + '/api/movies', {
             page: {{ page_index }}
         }, function(err, results) {
             if (err) {

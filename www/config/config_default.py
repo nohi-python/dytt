@@ -1,6 +1,7 @@
 # config_default.py
 
 configs = {
+    'basePath': '/dytt',
     'port': 9010,
     'db': {
         'host': '127.0.0.1',
